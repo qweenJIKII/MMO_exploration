@@ -1,0 +1,18 @@
+{
+	"name": "Game.Runtime",
+  "references": [
+    "Unity.Services.CloudCode.GeneratedBindings",
+    "Unity.Services.CloudCode",
+    "Unity.Services.Core",
+    "Unity.Services.Authentication"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

@@ -1,0 +1,13 @@
+G:\Unity\MMO_exploration\exchange_module\Project\obj\Release\net9.0\linux-x64\exchange_module.csproj.AssemblyReference.cache
+G:\Unity\MMO_exploration\exchange_module\Project\obj\Release\net9.0\linux-x64\exchange_module.GeneratedMSBuildEditorConfig.editorconfig
+G:\Unity\MMO_exploration\exchange_module\Project\obj\Release\net9.0\linux-x64\exchange_module.AssemblyInfoInputs.cache
+G:\Unity\MMO_exploration\exchange_module\Project\obj\Release\net9.0\linux-x64\exchange_module.AssemblyInfo.cs
+G:\Unity\MMO_exploration\exchange_module\Project\obj\Release\net9.0\linux-x64\exchange_module.csproj.CoreCompileInputs.cache
+G:\Unity\MMO_exploration\exchange_module\Project\obj\Release\net9.0\linux-x64\exchange_module.sourcelink.json
+G:\Unity\MMO_exploration\exchange_module\Project\bin\Release\net9.0\linux-x64\exchange_module.deps.json
+G:\Unity\MMO_exploration\exchange_module\Project\bin\Release\net9.0\linux-x64\exchange_module.dll
+G:\Unity\MMO_exploration\exchange_module\Project\bin\Release\net9.0\linux-x64\exchange_module.pdb
+G:\Unity\MMO_exploration\exchange_module\Project\obj\Release\net9.0\linux-x64\exchange_module.dll
+G:\Unity\MMO_exploration\exchange_module\Project\obj\Release\net9.0\linux-x64\refint\exchange_module.dll
+G:\Unity\MMO_exploration\exchange_module\Project\obj\Release\net9.0\linux-x64\exchange_module.pdb
+G:\Unity\MMO_exploration\exchange_module\Project\obj\Release\net9.0\linux-x64\ref\exchange_module.dll

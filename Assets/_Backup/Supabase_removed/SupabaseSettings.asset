@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8683c6240311b043b7954481dc02fbe, type: 3}
+  m_Name: SupabaseSettings
+  m_EditorClassIdentifier: Assembly-CSharp::Project.Core.Online.SupabaseSettings
+  url: https://nebkucmzmuipxtliesrd.supabase.co
+  anonKey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5lYmt1Y216bXVpcHh0bGllc3JkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAwMTgyNjYsImV4cCI6MjA3NTU5NDI2Nn0.s4EcIbcD0D7g-wHjgzhaV6ZO5PgA73nnSttaHGFtTOw
+  autoConnectRealtime: 0
+  autoRefreshToken: 1

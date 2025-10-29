@@ -1,0 +1,514 @@
+using System;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+#if GS2_UNITY_IMPL
+using Gs2.Unity.Core;
+using Gs2.Unity.Util;
+using Gs2.Core.Model;
+using System.Collections;
+using Gs2.Unity.Gs2Account.Model;
+using Gs2.Unity.Gs2Inventory;
+using Gs2.Unity.Gs2Distributor;
+using Gs2.Unity.Gs2Inbox;
+#endif
+
+namespace Project.Core.Online.Backend
+{
+    // GS2接続用の実装クラス（現状はスタブ）。
+    // 後でGS2 SDK呼び出しに置き換える。
+    public sealed class Gs2BackendService : IBackendService
+    {
+        private string _userId;
+        private readonly Project.Core.Online.Gs2Settings _settings;
+        #if GS2_UNITY_IMPL
+        // GS2 実装時に利用する共有ハンドル（サインイン時に確立）
+        private static Gs2.Unity.Core.Gs2Domain s_gs2;
+        private static GameSession s_gameSession;
+        // 二重サインイン防止用（同時呼び出しをまとめる）
+        private static TaskCompletionSource<string> s_signInTcs;
+        #endif
+
+        public Gs2BackendService()
+        {
+            // Resources から設定を読み込み
+            _settings = Resources.Load<Project.Core.Online.Gs2Settings>("Gs2Settings");
+            if (_settings == null)
+            {
+                Debug.LogWarning("[GS2] Gs2Settings.asset not found in Resources. Using fallback namespace 'MMO_My_Inventory'.");
+                _settings = ScriptableObject.CreateInstance<Project.Core.Online.Gs2Settings>();
+                _settings.NamespaceName = "MMO_My_Inventory"; // フォールバック
+            }
+            Debug.Log($"[GS2] Settings loaded. Namespace={_settings.NamespaceName}");
+        }
+
+        public async Task<string> SignInAsync()
+        {
+            // すでにサインイン済みなら即返す
+            if (!string.IsNullOrEmpty(_userId))
+            {
+                return _userId;
+            }
+
+            // 進行中のサインインがあればそれを待つ
+            #if GS2_UNITY_IMPL
+            if (s_signInTcs != null)
+            {
+                return await s_signInTcs.Task;
+            }
+            #endif
+
+#if GS2_UNITY_IMPL
+            // GS2 SDKを用いた匿名アカウント作成→ログイン（Coroutineベース）
+            try
+            {
+                s_signInTcs = new TaskCompletionSource<string>();
+                var clientId = Environment.GetEnvironmentVariable("GS2_CLIENT_ID");
+                var clientSecret = Environment.GetEnvironmentVariable("GS2_CLIENT_SECRET");
+                if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret))
+                {
+                    Debug.LogWarning("[GS2] Env GS2_CLIENT_ID/GS2_CLIENT_SECRET not set. Falling back to stub sign-in.");
+                    goto STUB_SIGNIN;
+                }
+
+                // Region は ap-northeast-1 を明示（現在の環境に合わせる）
+                var region = Region.ApNortheast1;
+
+                var tcs = new TaskCompletionSource<string>();
+                EnsureRunner();
+                var distributorNs = string.IsNullOrEmpty(_settings.DistributorNamespaceName)
+                    ? _settings.NamespaceName
+                    : _settings.DistributorNamespaceName;
+                // 既存アカウント（PlayerPrefs）を読み出し
+                var savedUserId = PlayerPrefs.GetString("GS2_ACCOUNT_USER_ID", string.Empty);
+                var savedPassword = PlayerPrefs.GetString("GS2_ACCOUNT_PASSWORD", string.Empty);
+                var useExisting = !string.IsNullOrEmpty(savedUserId) && !string.IsNullOrEmpty(savedPassword);
+                _runner.StartCoroutine(SignInRoutine(clientId, clientSecret, region, _settings.NamespaceName, distributorNs, useExisting ? savedUserId : null, useExisting ? savedPassword : null, tcs));
+                var uid = await tcs.Task;
+                if (!string.IsNullOrEmpty(uid))
+                {
+                    _userId = uid;
+                    Debug.Log($"[GS2] SignIn success (ns={_settings.NamespaceName}) userId={_userId}");
+                    s_signInTcs?.TrySetResult(_userId);
+                    s_signInTcs = null;
+                    return _userId;
+                }
+                else
+                {
+                    Debug.LogWarning("[GS2] SignIn returned empty user id. Fallback to stub.");
+                    goto STUB_SIGNIN;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[GS2] SignIn failed, fallback to stub. {ex.Message}");
+                goto STUB_SIGNIN;
+            }
+#endif
+STUB_SIGNIN:
+            // TODO: GS2 Account/Identifier を用いたサインインへ差し替え
+            await Task.CompletedTask;
+            if (string.IsNullOrEmpty(_userId))
+            {
+                _userId = $"local-{Guid.NewGuid():N}";
+                Debug.Log($"[GS2][Stub] SignInAsync (ns={_settings.NamespaceName}) -> {_userId}");
+            }
+            #if GS2_UNITY_IMPL
+            if (s_signInTcs != null)
+            {
+                s_signInTcs.TrySetResult(_userId);
+                s_signInTcs = null;
+            }
+            #endif
+            return _userId;
+        }
+
+#if GS2_UNITY_IMPL
+        // コルーチン実行用ランナー
+        private static Runner _runner;
+        private static void EnsureRunner()
+        {
+            if (_runner != null) return;
+            var go = new GameObject("__Gs2Runner");
+            GameObject.DontDestroyOnLoad(go);
+            _runner = go.AddComponent<Runner>();
+        }
+
+        private class Runner : MonoBehaviour { }
+
+        private static IEnumerator SignInRoutine(string clientId, string clientSecret, Region region, string accountNamespaceName, string distributorNamespaceName, string existingUserId, string existingPassword, TaskCompletionSource<string> tcs)
+        {
+            // Initialize GS2 SDK
+            Gs2Domain gs2 = null;
+            {
+                var future = Gs2Client.CreateFuture(new BasicGs2Credential(clientId, clientSecret), region);
+                yield return future;
+                if (future.Error != null) { tcs.TrySetException(future.Error); yield break; }
+                gs2 = future.Result;
+            }
+
+            // Create or reuse anonymous account
+            EzAccount account;
+            if (!string.IsNullOrEmpty(existingUserId) && !string.IsNullOrEmpty(existingPassword))
+            {
+                account = new EzAccount
+                {
+                    UserId = existingUserId,
+                    Password = existingPassword,
+                };
+                Debug.Log($"[GS2] Reuse stored account userId={existingUserId}");
+            }
+            else
+            {
+                var future = gs2.Account.Namespace(accountNamespaceName).CreateFuture();
+                yield return future;
+                if (future.Error != null) { tcs.TrySetException(future.Error); yield break; }
+                var future2 = future.Result.ModelFuture();
+                yield return future2;
+                if (future2.Error != null) { tcs.TrySetException(future2.Error); yield break; }
+                account = future2.Result;
+                // 永続化
+                try
+                {
+                    PlayerPrefs.SetString("GS2_ACCOUNT_USER_ID", account.UserId);
+                    PlayerPrefs.SetString("GS2_ACCOUNT_PASSWORD", account.Password);
+                    PlayerPrefs.Save();
+                    Debug.Log("[GS2] Stored account credentials in PlayerPrefs.");
+                }
+                catch { }
+            }
+
+            // Login
+            GameSession gameSession;
+            {
+                var future = gs2.LoginFuture(new Gs2AccountAuthenticator(accountSetting: new AccountSetting
+                {
+                    accountNamespaceName = accountNamespaceName,
+                }), account.UserId, account.Password);
+                yield return future;
+                if (future.Error != null) { tcs.TrySetException(future.Error); yield break; }
+                gameSession = future.Result;
+            }
+            // NOTE: 一部SDKでは StampSheet 自動実行設定APIが存在しないため、ここでは設定をスキップします。
+            // distributorNamespaceName は今後の対応で利用します。
+
+            // 以降のAPIで利用できるよう保持
+            s_gs2 = gs2;
+            s_gameSession = gameSession;
+
+            tcs.TrySetResult(account.UserId);
+        }
+#endif
+
+        public async Task<ItemDto[]> GetInventoryAsync()
+        {
+            #if GS2_UNITY_IMPL && GS2_EZ
+            try
+            {
+                if (s_gs2 == null || s_gameSession == null)
+                {
+                    Debug.LogWarning($"[GS2] GetInventoryAsync called before SignIn. Falling back to stub.");
+                    await Task.CompletedTask;
+                    return Array.Empty<ItemDto>();
+                }
+
+                var tcs = new TaskCompletionSource<ItemDto[]>();
+                EnsureRunner();
+                _runner.StartCoroutine(ListInventoryRoutine(_settings.NamespaceName, _settings.InventoryModelName, tcs));
+                var result = await tcs.Task;
+                return result ?? Array.Empty<ItemDto>();
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"[GS2] GetInventoryAsync failed: {ex.Message}. Falling back to empty.");
+                return Array.Empty<ItemDto>();
+            }
+            #elif GS2_UNITY_IMPL
+            try
+            {
+                if (s_gs2 == null || s_gameSession == null)
+                {
+                    Debug.LogWarning($"[GS2] GetInventoryAsync called before SignIn. Falling back to stub.");
+                    await Task.CompletedTask;
+                    return Array.Empty<ItemDto>();
+                }
+
+                // TODO: Core API 実装（EZ未使用環境）
+                Debug.Log($"[GS2] GetInventoryAsync (Core API placeholder). Returning empty for now.");
+                await Task.CompletedTask;
+                return Array.Empty<ItemDto>();
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"[GS2] GetInventoryAsync failed: {ex.Message}. Falling back to empty.");
+                return Array.Empty<ItemDto>();
+            }
+            #else
+            // TODO: GS2 Inventory から取得（スタブ）
+            await Task.CompletedTask;
+            Debug.Log($"[GS2][Stub] GetInventoryAsync (ns={_settings.NamespaceName}) -> 0 items");
+            return Array.Empty<ItemDto>();
+            #endif
+        }
+
+        public async Task<bool> GrantItemAsync(string itemId, int quantity, string idempotencyKey)
+        {
+            #if GS2_UNITY_IMPL
+            try
+            {
+                if (s_gs2 == null || s_gameSession == null)
+                {
+                    Debug.LogWarning($"[GS2] GrantItemAsync called before SignIn. Falling back to stub.");
+                    await Task.CompletedTask;
+                    return true;
+                }
+
+                // TODO: Distributor の StampSheet 実行で付与（冪等キーを指定）
+                // 将来実装フック: s_gs2.Distributor.Namespace(_settings.NamespaceName).Me(s_gameSession) ...
+                Debug.Log($"[GS2] GrantItemAsync is not fully wired yet. Returning success for now.");
+                await Task.CompletedTask;
+                return true;
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"[GS2] GrantItemAsync failed: {ex.Message}. Returning false.");
+                return false;
+            }
+            #else
+            // TODO: GS2 Inventory への付与（冪等キー使用）
+            await Task.CompletedTask;
+            Debug.Log($"[GS2][Stub] GrantItemAsync (ns={_settings.NamespaceName}) itemId={itemId} qty={quantity} idem={idempotencyKey}");
+            return true;
+            #endif
+        }
+
+#if GS2_UNITY_IMPL && GS2_EZ
+        private static IEnumerator ListInventoryRoutine(string ns, string inventoryName, TaskCompletionSource<ItemDto[]> tcs)
+        {
+            var domain = s_gs2.Inventory
+                .Namespace(namespaceName: ns)
+                .Me(gameSession: s_gameSession)
+                .Inventory(inventoryName: inventoryName);
+
+            // Warm model to ensure cache/domain is initialized (helps right after Receive)
+            var warmFuture = domain.ModelFuture();
+            yield return warmFuture;
+            if (warmFuture.Error != null)
+            {
+                tcs.TrySetException(warmFuture.Error);
+                yield break;
+            }
+
+            var it = domain.ItemSets();
+            var totals = new Dictionary<string, int>();
+
+            while (it.HasNext())
+            {
+                yield return it.Next();
+                if (it.Error != null)
+                {
+                    tcs.TrySetException(it.Error);
+                    yield break;
+                }
+                var cur = it.Current;
+                if (cur == null) break;
+
+                // EzItemSet: ItemName / Count(long) を想定
+                var itemId = cur.ItemName;
+                var count = (int)cur.Count;
+                if (string.IsNullOrEmpty(itemId)) continue;
+                if (totals.TryGetValue(itemId, out var v)) totals[itemId] = v + count; else totals[itemId] = count;
+                Debug.Log($"[GS2] Inventory item {itemId} x {count}");
+            }
+
+            var result = totals.Select(kv => new ItemDto(kv.Key, kv.Value)).ToArray();
+            tcs.TrySetResult(result);
+        }
+        private static IEnumerator ListInboxRoutine(string ns, TaskCompletionSource<InboxMessageDto[]> tcs)
+        {
+            var domain = s_gs2.Inbox
+                .Namespace(namespaceName: ns)
+                .Me(gameSession: s_gameSession);
+
+            var it = domain.Messages();
+            var list = new List<InboxMessageDto>();
+
+            while (it.HasNext())
+            {
+                yield return it.Next();
+                if (it.Error != null)
+                {
+                    tcs.TrySetException(it.Error);
+                    yield break;
+                }
+                var cur = it.Current;
+                if (cur == null) break;
+
+                var id = cur.Name;
+                var title = "";
+                var body = cur.Metadata;
+
+                DateTime? expiredAt = null;
+                var epoch = cur.ExpiresAt;
+                if (epoch > 0)
+                {
+                    expiredAt = epoch > 1000000000000L
+                        ? DateTimeOffset.FromUnixTimeMilliseconds(epoch).UtcDateTime
+                        : DateTimeOffset.FromUnixTimeSeconds(epoch).UtcDateTime;
+                }
+
+                var isRead = cur.ReadAt > 0;
+                var isReceived = cur.ReceivedAt > 0;
+
+                // 詳細ログ（Name基準で扱っていることを明示）
+                Debug.Log($"[GS2] Inbox item name={id} readAt={cur.ReadAt} receivedAt={cur.ReceivedAt} expiresAtEpoch={epoch}");
+
+                list.Add(new InboxMessageDto(id, title, body, expiredAt, isRead, isReceived));
+            }
+
+            tcs.TrySetResult(list.ToArray());
+        }
+
+        private static IEnumerator ReadInboxMessageRoutine(string ns, string messageName, TaskCompletionSource<bool> tcs)
+        {
+            for (int attempt = 0; attempt < 3; attempt++)
+            {
+                var domain = s_gs2.Inbox
+                    .Namespace(namespaceName: ns)
+                    .Me(gameSession: s_gameSession)
+                    .Message(messageName: messageName);
+
+                var future = domain.ReadFuture();
+                yield return future;
+                if (future.Error == null)
+                {
+                    // Give a short moment for StampSheet auto-run to update local cache
+                    yield return null; // one frame
+
+                    // Read 後のモデル確認（ReadAt をログ出力）
+                    var m = domain.ModelFuture();
+                    yield return m;
+                    if (m.Error == null && m.Result != null)
+                    {
+                        Debug.Log($"[GS2] Inbox read confirmed name={messageName} readAt={m.Result.ReadAt} receivedAt={m.Result.ReceivedAt}");
+                    }
+
+                    // Additionally, subscribe to Inventory ItemSets change and wait up to ~2 seconds
+                    var invDomain = s_gs2.Inventory
+                        .Namespace(namespaceName: ns)
+                        .Me(gameSession: s_gameSession)
+                        .Inventory(inventoryName: Project.Core.Online.Backend.BackendService.Current is Gs2BackendService gs2Svc ? gs2Svc._settings.InventoryModelName : "main");
+
+                    bool changed = false;
+                    ulong cbId = 0UL;
+                    try
+                    {
+                        cbId = invDomain.SubscribeItemSets(items => { changed = true; });
+                    }
+                    catch { /* ignore subscribe issues */ }
+
+                    float start = Time.realtimeSinceStartup;
+                    while (!changed && Time.realtimeSinceStartup - start < 2.0f)
+                    {
+                        // Poll iterator once to drive cache if needed
+                        var it = invDomain.ItemSets();
+                        while (it.HasNext())
+                        {
+                            yield return it.Next();
+                            if (it.Error != null) break;
+                            if (it.Current == null) break;
+                        }
+                        if (changed) break;
+                        yield return null;
+                    }
+
+                    // Cleanup subscribe
+                    try { invDomain.UnsubscribeItemSets(cbId); } catch { }
+                    tcs.TrySetResult(true);
+                    yield break;
+                }
+
+                if (attempt == 2)
+                {
+                    tcs.TrySetException(future.Error);
+                    yield break;
+                }
+            }
+        }
+#endif
+
+        public async Task<int> GetCurrencyAsync(string kind)
+        {
+            // TODO: GS2 Money から通貨取得
+            await Task.CompletedTask;
+            Debug.Log($"[GS2][Stub] GetCurrencyAsync (ns={_settings.NamespaceName}) kind={kind} -> 0");
+            return 0;
+        }
+
+        public async Task<bool> AddCurrencyAsync(string kind, int delta, string idempotencyKey)
+        {
+            // TODO: GS2 Money で通貨加算（冪等キー使用）
+            await Task.CompletedTask;
+            Debug.Log($"[GS2][Stub] AddCurrencyAsync (ns={_settings.NamespaceName}) kind={kind} delta={delta} idem={idempotencyKey}");
+            return true;
+        }
+
+        public async Task<InboxMessageDto[]> ListMailAsync()
+        {
+            #if GS2_UNITY_IMPL && GS2_EZ
+            try
+            {
+                if (s_gs2 == null || s_gameSession == null)
+                {
+                    Debug.LogWarning($"[GS2] ListMailAsync called before SignIn. Returning empty.");
+                    return Array.Empty<InboxMessageDto>();
+                }
+
+                var tcs = new TaskCompletionSource<InboxMessageDto[]>();
+                EnsureRunner();
+                _runner.StartCoroutine(ListInboxRoutine(_settings.NamespaceName, tcs));
+                var result = await tcs.Task;
+                return result ?? Array.Empty<InboxMessageDto>();
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"[GS2] ListMailAsync failed: {ex.Message}");
+                return Array.Empty<InboxMessageDto>();
+            }
+            #else
+            await Task.CompletedTask;
+            Debug.Log($"[GS2][Stub] ListMailAsync (ns={_settings.NamespaceName}) -> 0 messages");
+            return Array.Empty<InboxMessageDto>();
+            #endif
+        }
+
+        public async Task<bool> ReceiveMailAsync(string messageId, string idempotencyKey)
+        {
+            #if GS2_UNITY_IMPL && GS2_EZ
+            try
+            {
+                if (s_gs2 == null || s_gameSession == null)
+                {
+                    Debug.LogWarning($"[GS2] ReceiveMailAsync called before SignIn. Returning false.");
+                    return false;
+                }
+
+                var tcs = new TaskCompletionSource<bool>();
+                EnsureRunner();
+                _runner.StartCoroutine(ReadInboxMessageRoutine(_settings.NamespaceName, messageId, tcs));
+                return await tcs.Task;
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"[GS2] ReceiveMailAsync failed: {ex.Message}");
+                return false;
+            }
+            #else
+            await Task.CompletedTask;
+            Debug.Log($"[GS2][Stub] ReceiveMailAsync (ns={_settings.NamespaceName}) messageId={messageId} idem={idempotencyKey}");
+            return true;
+            #endif
+        }
+    }
+}

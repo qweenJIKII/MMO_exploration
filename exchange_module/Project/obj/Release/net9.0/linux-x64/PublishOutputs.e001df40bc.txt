@@ -1,0 +1,13 @@
+C:\Users\volty\AppData\Local\Temp\exchange_module\module-compilation\exchange_module.dll
+C:\Users\volty\AppData\Local\Temp\exchange_module\module-compilation\exchange_module.deps.json
+C:\Users\volty\AppData\Local\Temp\exchange_module\module-compilation\exchange_module.pdb
+C:\Users\volty\AppData\Local\Temp\exchange_module\module-compilation\Unity.Services.CloudCode.Apis.dll
+C:\Users\volty\AppData\Local\Temp\exchange_module\module-compilation\Unity.Services.CloudCode.Core.dll
+C:\Users\volty\AppData\Local\Temp\exchange_module\module-compilation\Google.Protobuf.dll
+C:\Users\volty\AppData\Local\Temp\exchange_module\module-compilation\Grpc.Core.Api.dll
+C:\Users\volty\AppData\Local\Temp\exchange_module\module-compilation\Grpc.Net.Client.dll
+C:\Users\volty\AppData\Local\Temp\exchange_module\module-compilation\Grpc.Net.Common.dll
+C:\Users\volty\AppData\Local\Temp\exchange_module\module-compilation\JsonSubTypes.dll
+C:\Users\volty\AppData\Local\Temp\exchange_module\module-compilation\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\volty\AppData\Local\Temp\exchange_module\module-compilation\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\volty\AppData\Local\Temp\exchange_module\module-compilation\Newtonsoft.Json.dll

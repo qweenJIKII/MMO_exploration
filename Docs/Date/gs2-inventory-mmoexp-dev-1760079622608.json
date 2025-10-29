@@ -1,0 +1,23 @@
+{
+  "version": "2019-02-05",
+  "inventoryModels": [
+    {
+      "name": "main",
+      "metadata": "{\"schema\":\"inventory.v1\",\"env\":\"dev\",\"stack\":true}",
+      "initialCapacity": 32,
+      "maxCapacity": 256,
+      "protectReferencedItem": true,
+      "itemModels": [
+        {
+          "name": "potion",
+          "metadata": "{\"rarity\":\"common\",\"type\":\"consumable\"}",
+          "stackingLimit": 999,
+          "allowMultipleStacks": false,
+          "sortValue": 0
+        }
+      ]
+    }
+  ],
+  "simpleInventoryModels": [],
+  "bigInventoryModels": []
+}

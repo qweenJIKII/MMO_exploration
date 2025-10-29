@@ -1,0 +1,7 @@
+# ここに実際の key-id を貼る（<>ごと不要）
+$KEY_ID = "cb6f436d-4751-42a8-8b42-613c4c28e8ec"
+# ここに実際の secret を貼る（<>ごと不要）
+$SECRET = "xTMsb-fPY7-TCxM7Vr8heV67Y-r_GCyi"
+
+# secret を標準入力でパイプしつつログイン
+$SECRET | npx.cmd --yes ugs@latest login --service-key-id $KEY_ID --secret-key-stdin

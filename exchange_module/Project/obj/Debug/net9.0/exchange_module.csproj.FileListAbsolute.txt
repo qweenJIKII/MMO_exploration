@@ -1,0 +1,6 @@
+G:\Unity\MMO_exploration\exchange_module\Project\obj\Debug\net9.0\exchange_module.csproj.AssemblyReference.cache
+G:\Unity\MMO_exploration\exchange_module\Project\obj\Debug\net9.0\exchange_module.GeneratedMSBuildEditorConfig.editorconfig
+G:\Unity\MMO_exploration\exchange_module\Project\obj\Debug\net9.0\exchange_module.AssemblyInfoInputs.cache
+G:\Unity\MMO_exploration\exchange_module\Project\obj\Debug\net9.0\exchange_module.AssemblyInfo.cs
+G:\Unity\MMO_exploration\exchange_module\Project\obj\Debug\net9.0\exchange_module.csproj.CoreCompileInputs.cache
+G:\Unity\MMO_exploration\exchange_module\Project\obj\Debug\net9.0\exchange_module.sourcelink.json

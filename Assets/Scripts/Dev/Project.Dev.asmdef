@@ -1,0 +1,20 @@
+{
+    "name": "Project.Dev",
+    "rootNamespace": "Project.Dev",
+    "references": [
+        "Project.Core",
+        "Unity.Services.Authentication",
+        "Unity.Services.CloudSave",
+        "Unity.Profiling.Core",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
