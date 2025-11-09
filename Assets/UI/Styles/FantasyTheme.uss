@@ -1,0 +1,619 @@
+/* ファンタジーMMO UIテーマ - AAA品質 USS スタイルシート */
+/* Phase 2実装: プレミアムデザイン */
+
+/* ===== 共通スタイル ===== */
+
+.fantasy-frame {
+    background-color: rgba(15, 15, 20, 0.95);
+    border-color: rgba(255, 215, 0, 0.8);
+    border-width: 3px;
+    border-radius: 16px;
+    padding: 16px;
+}
+
+.fantasy-panel {
+    background-color: rgba(20, 20, 30, 0.85);
+    border-color: rgba(100, 150, 255, 0.4);
+    border-width: 2px;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+}
+
+/* ===== テキストスタイル - AAA品質 ===== */
+
+.text-primary {
+    color: rgb(255, 255, 255);
+    font-size: 16px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.text-secondary {
+    color: rgb(180, 180, 200);
+    font-size: 14px;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.text-amber {
+    color: rgb(255, 215, 0);
+    text-shadow: 0 0 12px rgba(255, 215, 0, 0.8), 0 2px 8px rgba(0, 0, 0, 1);
+}
+
+.text-title {
+    color: rgb(255, 215, 0);
+    font-size: 20px;
+    -unity-font-style: bold;
+    text-shadow: 0 0 16px rgba(255, 215, 0, 1), 0 3px 12px rgba(0, 0, 0, 1);
+    letter-spacing: 2px;
+}
+
+/* ===== HP/MP Orb - AAA品質 ===== */
+
+.health-orb-container {
+    width: 160px;
+    height: 160px;
+}
+
+.health-orb {
+    width: 160px;
+    height: 160px;
+    border-radius: 80px;
+    background: radial-gradient(circle at 30% 30%, rgba(80, 20, 20, 1), rgba(20, 5, 5, 1));
+    border-color: rgba(255, 50, 50, 0.9);
+    border-width: 4px;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(255, 50, 50, 0.6), inset 0 0 40px rgba(0, 0, 0, 0.8);
+}
+
+.health-orb-fill {
+    background: linear-gradient(180deg, rgba(255, 80, 80, 1) 0%, rgba(200, 30, 30, 1) 100%);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transition-property: height;
+    transition-duration: 0.4s;
+    transition-timing-function: ease-out;
+    box-shadow: 0 0 20px rgba(255, 50, 50, 0.8);
+}
+
+.mana-orb-container {
+    width: 160px;
+    height: 160px;
+}
+
+.mana-orb {
+    width: 160px;
+    height: 160px;
+    border-radius: 80px;
+    background: radial-gradient(circle at 30% 30%, rgba(20, 40, 100, 1), rgba(5, 10, 30, 1));
+    border-color: rgba(80, 150, 255, 0.9);
+    border-width: 4px;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(80, 150, 255, 0.6), inset 0 0 40px rgba(0, 0, 0, 0.8);
+}
+
+.mana-orb-fill {
+    background: linear-gradient(180deg, rgba(100, 180, 255, 1) 0%, rgba(40, 100, 220, 1) 100%);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transition-property: height;
+    transition-duration: 0.4s;
+    transition-timing-function: ease-out;
+    box-shadow: 0 0 20px rgba(80, 150, 255, 0.8);
+}
+
+.orb-text {
+    color: rgb(255, 255, 255);
+    font-size: 32px;
+    -unity-text-align: middle-center;
+    text-shadow: 0 3px 12px rgba(0, 0, 0, 1), 0 0 20px rgba(255, 215, 0, 0.5);
+    -unity-font-style: bold;
+}
+
+.orb-text-small {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 16px;
+    -unity-text-align: middle-center;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 1);
+}
+
+/* ===== スキルバー - AAA品質 ===== */
+
+.skill-bar-container {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(180deg, rgba(30, 30, 40, 0.95) 0%, rgba(20, 20, 30, 0.95) 100%);
+    border-color: rgba(100, 150, 255, 0.6);
+    border-width: 3px;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.9);
+}
+
+.skill-slot {
+    width: 72px;
+    height: 72px;
+    background: radial-gradient(circle at 30% 30%, rgba(60, 60, 80, 1), rgba(30, 30, 50, 1));
+    border-color: rgba(100, 150, 255, 0.7);
+    border-width: 3px;
+    border-radius: 12px;
+    margin: 6px;
+    position: relative;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8), inset 0 2px 8px rgba(255, 255, 255, 0.1);
+    transition-property: all;
+    transition-duration: 0.2s;
+}
+
+.skill-slot:hover {
+    border-color: rgba(255, 215, 0, 1);
+    scale: 1.1;
+    box-shadow: 0 8px 24px rgba(255, 215, 0, 0.6), inset 0 2px 8px rgba(255, 255, 255, 0.2);
+    background: radial-gradient(circle at 30% 30%, rgba(80, 80, 100, 1), rgba(40, 40, 60, 1));
+}
+
+.skill-icon {
+    width: 100%;
+    height: 100%;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.skill-hotkey {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 1) 0%, rgba(255, 165, 0, 1) 100%);
+    border-color: rgba(255, 255, 255, 0.8);
+    border-width: 2px;
+    border-radius: 14px;
+    -unity-text-align: middle-center;
+    color: rgb(20, 20, 30);
+    font-size: 14px;
+    -unity-font-style: bold;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.8);
+}
+
+.skill-cooldown-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    transition-property: height;
+    transition-duration: 0.1s;
+}
+
+.skill-cooldown-text {
+    position: absolute;
+    color: white;
+    font-size: 20px;
+    -unity-text-align: middle-center;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+}
+
+/* ===== プログレスバー - AAA品質 ===== */
+
+.progress-bar-container {
+    height: 16px;
+    background: linear-gradient(180deg, rgba(10, 10, 15, 0.9) 0%, rgba(20, 20, 30, 0.9) 100%);
+    border-color: rgba(100, 150, 255, 0.4);
+    border-width: 2px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.progress-bar-fill {
+    height: 100%;
+    transition-property: width;
+    transition-duration: 0.4s;
+    transition-timing-function: ease-out;
+    box-shadow: 0 0 12px currentColor;
+}
+
+.health-bar {
+    background: linear-gradient(90deg, rgba(255, 50, 50, 1) 0%, rgba(255, 100, 100, 1) 100%);
+    box-shadow: 0 0 16px rgba(255, 50, 50, 0.8);
+}
+
+.mana-bar {
+    background: linear-gradient(90deg, rgba(80, 150, 255, 1) 0%, rgba(120, 180, 255, 1) 100%);
+    box-shadow: 0 0 16px rgba(80, 150, 255, 0.8);
+}
+
+.experience-bar {
+    background: linear-gradient(90deg, rgba(255, 215, 0, 1) 0%, rgba(255, 235, 100, 1) 100%);
+    box-shadow: 0 0 16px rgba(255, 215, 0, 0.8);
+}
+
+/* ===== ミニマップ - AAA品質 ===== */
+
+.minimap-container {
+    width: 256px;
+}
+
+.minimap-display {
+    width: 256px;
+    height: 224px;
+    background: radial-gradient(circle at center, rgba(20, 30, 40, 1), rgba(10, 15, 20, 1));
+    border-color: rgba(100, 150, 255, 0.6);
+    border-width: 3px;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.9), inset 0 0 40px rgba(0, 0, 0, 0.8);
+}
+
+.minimap-icon {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+}
+
+.minimap-icon-player-local {
+    width: 12px;
+    height: 12px;
+    background-color: rgb(251, 191, 36);
+    border-radius: 6px;
+}
+
+.minimap-icon-player {
+    width: 8px;
+    height: 8px;
+    background-color: rgb(74, 222, 128);
+    border-radius: 4px;
+}
+
+.minimap-icon-enemy {
+    width: 8px;
+    height: 8px;
+    background-color: rgb(239, 68, 68);
+    border-radius: 2px;
+}
+
+.minimap-icon-enemy-elite {
+    width: 8px;
+    height: 8px;
+    background-color: rgb(168, 85, 247);
+    border-radius: 2px;
+}
+
+/* ===== クエストトラッカー - AAA品質 ===== */
+
+.quest-tracker {
+    width: 320px;
+}
+
+.quest-entry {
+    background: linear-gradient(135deg, rgba(30, 30, 45, 0.9) 0%, rgba(20, 20, 35, 0.9) 100%);
+    border-color: rgba(100, 150, 255, 0.5);
+    border-width: 2px;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
+    transition-property: all;
+    transition-duration: 0.2s;
+}
+
+.quest-entry:hover {
+    background: linear-gradient(135deg, rgba(40, 40, 55, 0.95) 0%, rgba(30, 30, 45, 0.95) 100%);
+    border-color: rgba(255, 215, 0, 0.7);
+    box-shadow: 0 6px 24px rgba(255, 215, 0, 0.3);
+}
+
+.quest-title {
+    color: rgb(255, 215, 0);
+    font-size: 16px;
+    margin-bottom: 10px;
+    -unity-font-style: bold;
+    text-shadow: 0 0 12px rgba(255, 215, 0, 0.8), 0 2px 8px rgba(0, 0, 0, 1);
+}
+
+.quest-objectives {
+    margin-top: 8px;
+}
+
+.quest-objective {
+    flex-direction: row;
+    align-items: flex-start;
+    margin-bottom: 6px;
+}
+
+.quest-checkbox {
+    width: 14px;
+    height: 14px;
+    border-color: rgba(120, 48, 13, 0.5);
+    border-width: 2px;
+    border-radius: 2px;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.quest-checkbox.checked {
+    background-color: rgba(5, 150, 105, 0.3);
+    border-color: rgba(5, 150, 105, 0.7);
+}
+
+.quest-objective-text {
+    color: rgb(214, 211, 209);
+    font-size: 12px;
+    flex-grow: 1;
+}
+
+.quest-objective-text.completed {
+    color: rgb(120, 113, 108);
+    text-decoration: line-through;
+}
+
+.quest-progress-container {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 4px;
+}
+
+.quest-progress-bar {
+    height: 6px;
+    background-color: rgba(13, 12, 11, 0.8);
+    border-color: rgba(120, 48, 13, 0.4);
+    border-width: 1px;
+    border-radius: 3px;
+    overflow: hidden;
+    flex-grow: 1;
+    margin-right: 8px;
+}
+
+.quest-progress-fill {
+    height: 100%;
+    background-color: rgb(217, 119, 6);
+    transition-property: width;
+    transition-duration: 0.5s;
+}
+
+.quest-progress-label {
+    color: rgb(251, 191, 36);
+    font-size: 10px;
+}
+
+/* ===== チャットウィンドウ - AAA品質 ===== */
+
+.chat-window {
+    width: 400px;
+}
+
+.chat-header {
+    background: linear-gradient(180deg, rgba(40, 40, 60, 0.9) 0%, rgba(30, 30, 50, 0.9) 100%);
+    border-bottom-color: rgba(100, 150, 255, 0.5);
+    border-bottom-width: 2px;
+    padding: 14px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    transition-property: all;
+    transition-duration: 0.2s;
+}
+
+.chat-header:hover {
+    background: linear-gradient(180deg, rgba(50, 50, 70, 0.95) 0%, rgba(40, 40, 60, 0.95) 100%);
+    box-shadow: 0 0 16px rgba(100, 150, 255, 0.4);
+}
+
+.chat-messages-scroll {
+    max-height: 128px;
+    background-color: rgba(13, 12, 11, 0.4);
+}
+
+.chat-message {
+    flex-direction: row;
+    padding: 4px 8px;
+    font-size: 12px;
+}
+
+.chat-sender-system {
+    color: rgb(251, 191, 36);
+}
+
+.chat-sender-party {
+    color: rgb(34, 211, 238);
+}
+
+.chat-sender-guild {
+    color: rgb(168, 85, 247);
+}
+
+.chat-sender-default {
+    color: rgb(214, 211, 209);
+}
+
+.chat-separator {
+    color: rgb(120, 113, 108);
+    margin-left: 4px;
+    margin-right: 4px;
+}
+
+.chat-message-text {
+    color: rgb(214, 211, 209);
+}
+
+.chat-input-container {
+    padding: 12px;
+    border-top-color: rgba(120, 48, 13, 0.3);
+    border-top-width: 1px;
+}
+
+.chat-input {
+    background-color: rgba(13, 12, 11, 0.6);
+    border-color: rgba(120, 48, 13, 0.4);
+    border-width: 1px;
+    border-radius: 4px;
+    padding: 6px 12px;
+    color: rgb(214, 211, 209);
+}
+
+.chat-input:focus {
+    border-color: rgba(217, 119, 6, 0.6);
+}
+
+/* ===== パーティフレーム ===== */
+
+.party-frames-container {
+    flex-direction: column;
+}
+
+.party-member-frame {
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(28, 25, 23, 0.7);
+    border-color: rgba(120, 48, 13, 0.3);
+    border-width: 1px;
+    border-radius: 8px;
+    padding: 8px;
+    margin-bottom: 8px;
+    width: 256px;
+}
+
+.party-member-portrait {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    border-color: rgba(217, 119, 6, 0.6);
+    border-width: 1.5px;
+    margin-right: 8px;
+    position: relative;
+}
+
+.party-member-level {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    width: 16px;
+    height: 16px;
+    background-color: rgb(28, 25, 23);
+    border-color: rgb(120, 48, 13);
+    border-width: 1px;
+    border-radius: 8px;
+    -unity-text-align: middle-center;
+    color: rgb(252, 211, 77);
+    font-size: 10px;
+}
+
+.party-member-info {
+    flex-grow: 1;
+}
+
+.party-member-name {
+    color: rgb(252, 211, 77);
+    font-size: 12px;
+    margin-bottom: 2px;
+}
+
+.party-member-class {
+    color: rgb(120, 113, 108);
+    font-size: 10px;
+    margin-bottom: 4px;
+}
+
+.party-member-bar-container {
+    height: 6px;
+    background-color: rgba(13, 12, 11, 0.6);
+    border-color: rgba(41, 37, 36, 1);
+    border-width: 1px;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 2px;
+}
+
+.party-member-bar-fill {
+    height: 100%;
+    transition-property: width;
+    transition-duration: 0.3s;
+}
+
+/* ===== レイアウト ===== */
+
+.top-left {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+}
+
+.top-right {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.top-center {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    translate: -50% 0;
+}
+
+.bottom-left {
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
+}
+
+.bottom-center {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    translate: -50% 0;
+}
+
+.bottom-right {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+}
+
+.left-side {
+    position: absolute;
+    top: 33%;
+    left: 24px;
+}
+
+/* ===== ユーティリティ ===== */
+
+.hidden {
+    display: none;
+}
+
+.flex-row {
+    flex-direction: row;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.gap-small {
+    margin: 4px;
+}
+
+.gap-medium {
+    margin: 8px;
+}
+
+.gap-large {
+    margin: 12px;
+}

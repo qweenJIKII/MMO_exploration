@@ -51,7 +51,7 @@ namespace Project.Editor.Setup
                 QualitySettings.SetQualityLevel(i, applyExpensiveChanges: false);
                 QualitySettings.renderPipeline = urpAsset;
             }
-            Debug.Log("[Setup] URP configured: " + UrpAssetPath);
+            Project.Debug.Debug.Log("[Setup] URP configured: " + UrpAssetPath);
         }
 
         [MenuItem("Tools/Setup/Configure Build (Windows)")]
@@ -72,7 +72,7 @@ namespace Project.Editor.Setup
                     new EditorBuildSettingsScene(scenePath, true)
                 };
                 EditorBuildSettings.scenes = list.ToArray();
-                Debug.Log("[Setup] Added to Build Settings: " + scenePath);
+                Project.Debug.Debug.Log("[Setup] Added to Build Settings: " + scenePath);
             }
 
             // Windowsプラットフォームへ切替（必要な場合）
@@ -86,7 +86,7 @@ namespace Project.Editor.Setup
             PlayerSettings.defaultScreenHeight = 1080;
             QualitySettings.vSyncCount = 0; // VSync OFF（FPS検証向け）
 
-            Debug.Log("[Setup] Build configured for Windows");
+            Project.Debug.Debug.Log("[Setup] Build configured for Windows");
         }
     }
 }

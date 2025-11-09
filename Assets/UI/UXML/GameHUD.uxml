@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<engine:UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:engine="UnityEngine.UIElements"
+    xmlns:editor="UnityEditor.UIElements"
+    xsi:noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
+>
+    <Style src="/Assets/UI/Styles/FantasyTheme.uss" />
+    
+    <!-- ゲームHUDルート -->
+    <engine:VisualElement name="game-hud-root" style="width: 100%; height: 100%;">
+        
+        <!-- 左上: パーティフレーム -->
+        <engine:VisualElement name="party-frames" class="top-left">
+            <engine:VisualElement name="player-party-frame" class="fantasy-frame" />
+            <engine:VisualElement name="party-members-container" class="party-frames-container" />
+        </engine:VisualElement>
+        
+        <!-- 右上: 通貨とミニマップ -->
+        <engine:VisualElement name="top-right-container" class="top-right">
+            <engine:VisualElement name="currency" class="fantasy-frame" style="margin-bottom: 12px;">
+                <engine:Label name="currency-label" class="text-amber" text="Gold: 1,234" />
+            </engine:VisualElement>
+            
+            <engine:VisualElement name="minimap" class="fantasy-frame minimap-container">
+                <engine:Label name="minimap-title" class="text-amber" text="MAP" style="margin-bottom: 8px; -unity-text-align: middle-center;" />
+                <engine:VisualElement name="map-display" class="minimap-display" />
+                <engine:Label name="location-label" class="text-secondary" text="Unknown Location" style="margin-top: 8px; -unity-text-align: middle-center;" />
+            </engine:VisualElement>
+        </engine:VisualElement>
+        
+        <!-- 左側: クエストトラッカー -->
+        <engine:VisualElement name="quest-tracker" class="left-side fantasy-frame quest-tracker">
+            <engine:Label name="quest-tracker-title" class="text-title" text="QUESTS" style="margin-bottom: 12px;" />
+            <engine:VisualElement name="quest-list" />
+        </engine:VisualElement>
+        
+        <!-- 左下: チャットウィンドウ -->
+        <engine:VisualElement name="chat-window" class="bottom-left fantasy-frame chat-window">
+            <engine:VisualElement name="chat-header" class="chat-header">
+                <engine:Label text="CHAT" class="text-amber" style="font-size: 12px;" />
+            </engine:VisualElement>
+            <engine:ScrollView name="chat-messages-scroll" class="chat-messages-scroll">
+                <engine:VisualElement name="chat-messages-container" />
+            </engine:ScrollView>
+            <engine:VisualElement name="chat-input-container" class="chat-input-container">
+                <engine:TextField name="chat-input" class="chat-input" placeholder-text="Type message..." />
+            </engine:VisualElement>
+        </engine:VisualElement>
+        
+        <!-- 下中央: プレイヤーフレーム（HP/MP Orb + スキルバー） -->
+        <engine:VisualElement name="player-frame" class="bottom-center" style="flex-direction: row; align-items: flex-end;">
+            
+            <!-- HP Orb -->
+            <engine:VisualElement name="health-orb-container" class="health-orb-container">
+                <engine:VisualElement name="health-orb" class="health-orb">
+                    <engine:VisualElement name="health-orb-fill" class="health-orb-fill" style="height: 100%;" />
+                </engine:VisualElement>
+                <engine:VisualElement style="position: absolute; width: 100%; height: 100%; justify-content: center; align-items: center;">
+                    <engine:Label name="health-text" class="orb-text" text="8750" />
+                    <engine:Label name="health-max-text" class="orb-text-small" text="10500" />
+                </engine:VisualElement>
+            </engine:VisualElement>
+            
+            <!-- スキルバー -->
+            <engine:VisualElement name="skill-bar-container" class="skill-bar-container" style="margin-left: 16px; margin-right: 16px;">
+                <engine:Label text="ABILITIES" class="text-amber" style="position: absolute; top: -24px; font-size: 10px; -unity-text-align: middle-center; width: 100%;" />
+                <engine:VisualElement name="skill-bar" style="flex-direction: row;" />
+            </engine:VisualElement>
+            
+            <!-- MP Orb -->
+            <engine:VisualElement name="mana-orb-container" class="mana-orb-container">
+                <engine:VisualElement name="mana-orb" class="mana-orb">
+                    <engine:VisualElement name="mana-orb-fill" class="mana-orb-fill" style="height: 100%;" />
+                </engine:VisualElement>
+                <engine:VisualElement style="position: absolute; width: 100%; height: 100%; justify-content: center; align-items: center;">
+                    <engine:Label name="mana-text" class="orb-text" text="3200" />
+                    <engine:Label name="mana-max-text" class="orb-text-small" text="4500" />
+                </engine:VisualElement>
+            </engine:VisualElement>
+            
+        </engine:VisualElement>
+        
+        <!-- 上中央: ターゲットフレーム -->
+        <engine:VisualElement name="target-frame" class="top-center fantasy-frame" style="display: none;">
+            <engine:Label name="target-name" class="text-title" text="Ancient Wyrm" />
+            <engine:VisualElement name="target-health-bar" class="progress-bar-container">
+                <engine:VisualElement name="target-health-fill" class="progress-bar-fill health-bar" style="width: 67%;" />
+            </engine:VisualElement>
+        </engine:VisualElement>
+        
+        <!-- 上中央（バフバー用スペース） -->
+        <engine:VisualElement name="buff-bar" style="position: absolute; top: 64px; left: 50%; translate: -50% 0; flex-direction: row;">
+            <!-- バフアイコンが動的に追加される -->
+        </engine:VisualElement>
+        
+    </engine:VisualElement>
+</engine:UXML>
