@@ -31,8 +31,17 @@ Unity Analytics 6.1.1の自動テストシステムの使用方法を説明し�
 
 2. **必要なGameObjectを配置**
    ```
-   - AnalyticsManager (AnalyticsManager.cs)
-   - AnalyticsAutoTest (AnalyticsAutoTest.cs)
+   ⚠️ 重要: 以下の順番で配置してください
+   
+   1. UgsInitializer (UgsInitializer.cs)
+      - Unity Servicesの初期化
+      - 匿名認証
+      
+   2. AnalyticsManager (AnalyticsManager.cs)
+      - Analytics機能本体
+      
+   3. AnalyticsAutoTest (AnalyticsAutoTest.cs)
+      - 自動テストスクリプト
    ```
 
 3. **AnalyticsAutoTestの設定**
@@ -232,10 +241,29 @@ jobs:
 #### Unity Servicesが初期化されていない
 **症状**: "Unity Servicesが初期化されていません" エラー
 
+**原因**: UGS認証が完了していない
+
 **解決策**:
+```
+1. シーンにUgsInitializerを配置
+   - GameObject > Create Empty
+   - 名前を "UgsInitializer" に変更
+   - UgsInitializer.cs をアタッチ
+   
+2. 実行順序を確認
+   - UgsInitializer が最初に実行される必要がある
+   - Script Execution Orderで確認可能
+   
+3. Consoleログを確認
+   - "[UgsInitializer] Unity Services Initialized." が表示されればOK
+   - "[UgsInitializer] Signed in. User ID: ..." が表示されればOK
+```
+
+**コードでの初期化例**:
 ```csharp
-// ProjectSetup.csなどで初期化
+// UgsInitializer.cs（既存）
 await UnityServices.InitializeAsync();
+await AuthenticationService.Instance.SignInAnonymouslyAsync();
 ```
 
 #### Assembly Definition参照エラー
