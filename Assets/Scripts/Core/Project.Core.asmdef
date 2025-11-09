@@ -2,11 +2,16 @@
     "name": "Project.Core",
     "rootNamespace": "Project.Core",
     "references": [
+        "Unity.Services.Analytics",
         "Unity.Services.Authentication",
         "Unity.Services.CloudSave",
         "Unity.Services.CloudCode",
         "Unity.Services.Core",
-        "Unity.Profiling.Core"
+        "Unity.Services.RemoteConfig",
+        "Unity.Profiling.Core",
+        "Unity.InputSystem",
+        "Unity.TextMeshPro",
+        "Unity.Cinemachine"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
