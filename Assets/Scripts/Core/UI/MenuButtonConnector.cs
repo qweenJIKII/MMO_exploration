@@ -21,22 +21,24 @@ namespace Project.Core.UI
 
         private void ConnectButtons()
         {
-            // システムメニューのボタン
-            ConnectButton("PauseMenu/MenuPanel/Button_Settings", menuManager.OpenSettingsMenu);
-            ConnectButton("PauseMenu/MenuPanel/Button_Help", menuManager.OpenHelp);
-            ConnectButton("PauseMenu/MenuPanel/Button_Logout", menuManager.ShowQuitConfirmation);
+            // システムメニューのボタン（必須）
+            ConnectButton("PauseMenu/MenuPanel/Button_Settings", menuManager.OpenSettingsMenu, required: true);
+            
+            // オプションのボタン（警告を出さない）
+            ConnectButton("PauseMenu/MenuPanel/Button_Help", menuManager.OpenHelp, required: false);
+            ConnectButton("PauseMenu/MenuPanel/Button_Logout", menuManager.ShowQuitConfirmation, required: false);
 
-            // 設定メニューのボタン
-            ConnectButton("SettingsMenu/Panel/Button_Back", menuManager.CloseSettingsMenu);
+            // 設定メニューのボタン（必須）
+            ConnectButton("SettingsMenu/Panel/Button_Back", menuManager.CloseSettingsMenu, required: true);
 
-            // ログアウト確認のボタン
-            ConnectButton("ConfirmQuitPanel/Dialog/Button_Yes", menuManager.QuitGame);
-            ConnectButton("ConfirmQuitPanel/Dialog/Button_No", menuManager.CancelQuit);
+            // ログアウト確認のボタン（必須）
+            ConnectButton("ConfirmQuitPanel/Dialog/Button_Yes", menuManager.QuitGame, required: true);
+            ConnectButton("ConfirmQuitPanel/Dialog/Button_No", menuManager.CancelQuit, required: true);
 
-            Debug.Log("[MenuButtonConnector] すべてのボタンを接続しました（システムメニュー）");
+            Debug.Log("[MenuButtonConnector] ボタン接続完了");
         }
 
-        private void ConnectButton(string path, UnityEngine.Events.UnityAction action)
+        private void ConnectButton(string path, UnityEngine.Events.UnityAction action, bool required = true)
         {
             Transform buttonTransform = transform.Find(path);
             if (buttonTransform != null)
@@ -54,7 +56,11 @@ namespace Project.Core.UI
             }
             else
             {
-                Debug.LogWarning($"[MenuButtonConnector] ボタンが見つかりません: {path}");
+                // requiredがtrueの場合のみ警告を出す
+                if (required)
+                {
+                    Debug.LogWarning($"[MenuButtonConnector] ボタンが見つかりません: {path}");
+                }
             }
         }
 
