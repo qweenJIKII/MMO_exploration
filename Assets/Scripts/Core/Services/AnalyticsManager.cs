@@ -61,11 +61,10 @@ namespace Project.Core.Services
                     return;
                 }
 
-                // Analytics開始
-                await AnalyticsService.Instance.CheckForRequiredConsents();
+                // Analytics 6.1.1では自動的に初期化される
                 isInitialized = true;
                 
-                Debug.Log("[AnalyticsManager] Analytics初期化成功");
+                Debug.Log("[AnalyticsManager] Analytics初期化成功 (Unity Analytics 6.1.1)");
                 OnAnalyticsInitialized?.Invoke();
 
                 // セッション開始イベント
@@ -318,13 +317,14 @@ namespace Project.Core.Services
 
             try
             {
+                // Unity Analytics 6.1.1のRecordEventを使用
                 if (parameters != null && parameters.Count > 0)
                 {
-                    AnalyticsService.Instance.CustomData(eventName, parameters);
+                    AnalyticsService.Instance.RecordEvent(eventName, parameters);
                 }
                 else
                 {
-                    AnalyticsService.Instance.CustomData(eventName);
+                    AnalyticsService.Instance.RecordEvent(eventName);
                 }
 
                 eventsSentThisSession++;
