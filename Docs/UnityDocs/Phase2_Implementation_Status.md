@@ -145,6 +145,7 @@
 
 ### ✅ 11. Analytics統合 【実装完了】
 - **AnalyticsManager.cs** - Analytics統合 ✅
+- **Unity Analytics 6.1.1対応** ✅
 - カスタムイベント送信 ✅
 - プレイヤー行動トラッキング ✅
 - セッション管理（開始/終了）
@@ -152,6 +153,7 @@
 - クエストイベント（開始/完了）
 - 経済イベント（通貨取得/消費）
 - UIイベント（画面遷移、ボタンクリック）
+- 標準イベント（トランザクション、プレイヤープログレス）
 - デバッグ機能（Context Menu）
 
 ---
@@ -254,12 +256,13 @@
   - UI Toolkit対応（FantasyTheme.uss拡張）
   - デバッグ機能（Context Menu）
 - **AnalyticsManager実装完了**
-  - AnalyticsManager.cs実装（Unity Analytics統合）
+  - AnalyticsManager.cs実装（Unity Analytics 6.1.1統合）
   - セッション管理（開始/終了）
   - プレイヤーイベント（レベルアップ、死亡、アイテム取得/使用）
   - クエストイベント（開始/完了）
   - 経済イベント（通貨取得/消費）
   - UIイベント（画面遷移、ボタンクリック）
+  - 標準イベント（トランザクション、プレイヤープログレス）
   - カスタムイベント送信API
   - デバッグ機能（Context Menu）
 - **USS警告修正**

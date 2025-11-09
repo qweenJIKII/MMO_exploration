@@ -11,6 +11,7 @@ namespace Project.Core.Services
     /// Analytics管理
     /// プレイヤー行動トラッキング、カスタムイベント送信
     /// Phase 2実装: 基本的なイベント収集
+    /// Unity Analytics 6.1.1対応
     /// </summary>
     public class AnalyticsManager : MonoBehaviour
     {
@@ -362,6 +363,66 @@ namespace Project.Core.Services
 
         #endregion
 
+        #region Analytics 6.1.1 標準イベント
+
+        /// <summary>
+        /// トランザクションイベントを記録（Analytics 6.1.1）
+        /// </summary>
+        public void RecordTransaction(string productId, decimal amount, string currency, string transactionId = null)
+        {
+            if (!isInitialized || !enableAnalytics)
+            {
+                return;
+            }
+
+            try
+            {
+                var parameters = new Dictionary<string, object>
+                {
+                    { "productID", productId },
+                    { "amount", (double)amount },
+                    { "currency", currency }
+                };
+
+                if (!string.IsNullOrEmpty(transactionId))
+                {
+                    parameters.Add("transactionID", transactionId);
+                }
+
+                parameters.Add("timestamp", DateTime.UtcNow.ToString("o"));
+
+                SendCustomEvent("transaction", parameters);
+
+                if (debugMode)
+                {
+                    Debug.Log($"[AnalyticsManager] トランザクション記録: {productId} - {amount} {currency}");
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[AnalyticsManager] トランザクション記録失敗: {e.Message}");
+            }
+        }
+
+        /// <summary>
+        /// プレイヤープログレスイベントを記録
+        /// </summary>
+        public void RecordPlayerProgress(string progressionStatus, string progressionType, string progressionName, int score = 0)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "progressionStatus", progressionStatus }, // "start", "complete", "fail"
+                { "progressionType", progressionType },     // "level", "quest", "achievement"
+                { "progressionName", progressionName },
+                { "score", score },
+                { "timestamp", DateTime.UtcNow.ToString("o") }
+            };
+
+            SendCustomEvent("player_progression", parameters);
+        }
+
+        #endregion
+
         #region デバッグ機能
 
         [ContextMenu("Test: Send Test Event")]
@@ -397,6 +458,18 @@ namespace Project.Core.Services
         private void TestFlush()
         {
             FlushEvents();
+        }
+
+        [ContextMenu("Test: Record Transaction")]
+        private void TestTransaction()
+        {
+            RecordTransaction("gold_pack_100", 9.99m, "USD", "test_transaction_001");
+        }
+
+        [ContextMenu("Test: Record Player Progress")]
+        private void TestPlayerProgress()
+        {
+            RecordPlayerProgress("complete", "level", "tutorial", 100);
         }
 
         /// <summary>
