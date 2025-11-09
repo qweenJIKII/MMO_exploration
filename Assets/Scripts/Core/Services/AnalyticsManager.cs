@@ -44,7 +44,7 @@ namespace Project.Core.Services
             }
         }
 
-        private async void Start()
+        private void Start()
         {
             if (!enableAnalytics)
             {
@@ -317,15 +317,18 @@ namespace Project.Core.Services
 
             try
             {
-                // Unity Analytics 6.1.1のRecordEventを使用
+                // Unity Analytics 6.1.1のCustomEventを使用
+                var customEvent = new Unity.Services.Analytics.CustomEvent(eventName);
+                
                 if (parameters != null && parameters.Count > 0)
                 {
-                    AnalyticsService.Instance.RecordEvent(eventName, parameters);
+                    foreach (var param in parameters)
+                    {
+                        customEvent.Add(param.Key, param.Value);
+                    }
                 }
-                else
-                {
-                    AnalyticsService.Instance.RecordEvent(eventName);
-                }
+
+                AnalyticsService.Instance.RecordEvent(customEvent);
 
                 eventsSentThisSession++;
                 OnEventSent?.Invoke(eventName);
